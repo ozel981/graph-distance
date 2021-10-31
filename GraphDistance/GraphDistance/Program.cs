@@ -7,9 +7,37 @@ namespace GraphDistance
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            Graph g = new Graph(new double[,]{{0,1},{1,0}});
-            Console.WriteLine(g);
+            try
+            {
+                Graph g = new Graph(ReadMatrix());
+                Graph h = new Graph(ReadMatrix());
+                Console.WriteLine(g);
+                Console.WriteLine(h);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"could not create graphs: {e}");
+                System.Environment.Exit(1);
+            }
+        }
+
+        static double[,] ReadMatrix()
+        {
+            var n = Convert.ToInt32(Console.ReadLine());
+            double[,] edges = new double[n,n];
+            for (int i = 0; i < n; i++)
+            {
+                var row = Console.ReadLine()?.Split();
+                if (row.Length != n)
+                {
+                    throw new Exception("incorrect number of values in a row");
+                }
+                for (int j = 0; j < n; j++)
+                {
+                    edges[i, j] = int.Parse(row[j]);
+                }
+            }
+            return edges;
         }
     }
 }
