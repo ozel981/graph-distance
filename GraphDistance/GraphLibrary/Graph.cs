@@ -1,13 +1,13 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-
+using System.Text;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace GraphLibrary
 {
     public class Graph
     {
-        private Matrix<double> edges;
+        public Matrix<double> Edges { get; }
 
         public Graph(double[,] edges)
         {
@@ -21,7 +21,7 @@ namespace GraphLibrary
             {
                 throw new ArgumentException($"row count ({rowCount}) differs from column count ({colCount})");
             }
-            this.edges = Matrix<double>.Build.DenseOfArray(edges);
+            this.Edges = Matrix<double>.Build.DenseOfArray(edges);
         }
 
         public Graph NewCompatibilityGraph(Graph g, Graph h)
@@ -31,12 +31,26 @@ namespace GraphLibrary
         
         public int VerticesCount()
         {
-            return this.edges.RowCount;
+            return this.Edges.RowCount;
         }
 
         public override string ToString()
         {
-            return $"Graph with {this.VerticesCount()} vertices.";
+            int n = VerticesCount();
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"Graph with {this.VerticesCount()} vertices.\n");
+
+            for(int i=0; i < n; i++)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    stringBuilder.Append($"{Edges[i, j]}, ");
+                }
+                stringBuilder.Append('\n');
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }
