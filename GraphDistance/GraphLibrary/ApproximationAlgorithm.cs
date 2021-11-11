@@ -81,7 +81,7 @@ namespace GraphLibrary
 
         private static Dictionary<int, int> GetUpdatedPA(Dictionary<int, int> degPA, List<int> neighbors, Graph graph)
         {
-            Dictionary<int, int> newDegPA = new();
+            var newDegPA = new Dictionary<int, int>();
 
             foreach (var neighbor in neighbors)
             {
@@ -111,7 +111,7 @@ namespace GraphLibrary
         }
 
         /// <summary>
-        /// Get vertex with the highest degree from G(PA)
+        /// Get vertex with the highest degree in G(PA)
         /// </summary>
         /// <param name="candidates"></param>
         /// <returns>Vertex identifier</returns>
