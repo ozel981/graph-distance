@@ -12,14 +12,7 @@ namespace GraphLibrary
 
         public ApproximationAlgorithms(int? seed = null)
         {
-            if (seed.HasValue)
-            {
-                random = new Random(seed.Value);
-            }
-            else
-            {
-                random = new Random();
-            }
+            random = seed.HasValue ? new Random(seed.Value) : new Random();
         }
 
         /// <summary>
