@@ -1,13 +1,18 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-
+using System.Collections.Generic;
+using System.Text;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace GraphLibrary
 {
     public class Graph
     {
-        private Matrix<double> edges;
+        public Matrix<double> edges;
+
+        public Graph(int verticesCount)
+        {
+            this.edges = Matrix<double>.Build.Dense(verticesCount, verticesCount);
+        }
 
         public Graph(double[,] edges)
         {
@@ -24,11 +29,6 @@ namespace GraphLibrary
             this.edges = Matrix<double>.Build.DenseOfArray(edges);
         }
 
-        public Graph NewCompatibilityGraph(Graph g, Graph h)
-        {
-            throw new NotImplementedException();
-        }
-        
         public int VerticesCount()
         {
             return this.edges.RowCount;
@@ -36,7 +36,53 @@ namespace GraphLibrary
 
         public override string ToString()
         {
-            return $"Graph with {this.VerticesCount()} vertices.";
+            int n = VerticesCount();
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append($"Graph with {n} vertices.\n");
+            for(int i = 0; i < n; i++)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    stringBuilder.Append($"{edges[i, j]}, ");
+                }
+                stringBuilder.Append('\n');
+            }
+
+            return stringBuilder.ToString();
+        }
+    }
+
+    public class CompatibilityGraph : Graph
+    {
+        private  Dictionary<int, (int, int)> NodeMap;
+        public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount() * h.VerticesCount())
+        {
+            NodeMap = new Dictionary<int, (int, int)>();
+            var nG = g.VerticesCount();
+            var nH = h.VerticesCount();
+            for (int i = 0; i < nG * nH; i++)
+            {
+                NodeMap[i] = (i/nG, i%nG);
+            }
+
+            var n = VerticesCount();
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    if (i == j)
+                    {
+                        continue;
+                    }
+                    (var x, var y) = NodeMap[i];
+                    (var a, var b) = NodeMap[j];
+                    if (Math.Abs(g.edges[x, a] - h.edges[y, b]) < Double.Epsilon &&
+                        x != a && y != b)
+                    {
+                        this.edges[i, j] = 1;
+                    }
+                }
+            }
         }
     }
 }
