@@ -6,9 +6,21 @@ using System.Threading.Tasks;
 
 namespace GraphLibrary
 {
-    public static class ApproximationAlgorithm
+    public class ApproximationAlgorithms
     {
-        static Random Random = new Random();
+        private readonly Random random;
+
+        public ApproximationAlgorithms(int? seed = null)
+        {
+            if (seed.HasValue)
+            {
+                random = new Random(seed.Value);
+            }
+            else
+            {
+                random = new Random();
+            }
+        }
 
         /// <summary>
         /// Finding potential maximum clique of a graph
@@ -16,20 +28,20 @@ namespace GraphLibrary
         /// <param name="graph"></param>
         /// <param name="k">number of samples</param>
         /// <returns>List of vertices of clique</returns>
-        public static List<int> FindMaximumClique(Graph graph, int k)
+        public List<int> FindMaximumClique(Graph graph, int k)
         {
-            List<int> maximumClique = new List<int>();
+            var maximumClique = new List<int>();
 
-            int n = graph.VerticesCount();
+            int n = graph.VerticesCount;
 
-            for(int sample = 0; sample < k; sample++)
+            for (int sample = 0; sample < k; sample++)
             {
                 // Current Clique
-                List<int> CC = new List<int>();
+                var CC = new List<int>();
                 // Candidates and degree
-                Dictionary<int, int> degPA = new Dictionary<int, int>();
+                var degPA = new Dictionary<int, int>();
 
-                int v = Random.Next() % n;
+                int v = random.Next() % n;
                 CC.Add(v);
 
                 // Initialize PA set
@@ -53,12 +65,12 @@ namespace GraphLibrary
 
                     degPA.Remove(bestCandidate);
 
-                    var neighbors = GetNeighbors(bestCandidate, graph);
+                    var neighbors = graph.GetNeighbors(bestCandidate);
 
                     degPA = GetUpdatedPA(degPA, neighbors, graph);
                 }
 
-                if(CC.Count > maximumClique.Count)
+                if (CC.Count > maximumClique.Count)
                 {
                     maximumClique = new List<int>(CC);
                 }
@@ -67,11 +79,11 @@ namespace GraphLibrary
             return maximumClique;
         }
 
-        private static Dictionary<int, int> GetUpdatedPA(Dictionary<int,int> degPA, List<int> neighbors, Graph graph)
+        private static Dictionary<int, int> GetUpdatedPA(Dictionary<int, int> degPA, List<int> neighbors, Graph graph)
         {
-            Dictionary<int, int> newDegPA = new Dictionary<int, int>();
+            Dictionary<int, int> newDegPA = new();
 
-            foreach(var neighbor in neighbors)
+            foreach (var neighbor in neighbors)
             {
                 if (degPA.ContainsKey(neighbor))
                 {
@@ -84,13 +96,13 @@ namespace GraphLibrary
             return newDegPA;
         }
 
-        private static void CalculateDegree(Dictionary<int, int> degPA, Graph compatibilityGraph)
+        private static void CalculateDegree(Dictionary<int, int> degPA, Graph graph)
         {
-            foreach(var vertex in degPA)
+            foreach (var vertex in degPA)
             {
-                foreach(var neighbor in degPA)
+                foreach (var neighbor in degPA)
                 {
-                    if(compatibilityGraph.Edges[neighbor.Key, vertex.Key] > 0)
+                    if (graph.Edges[neighbor.Key, vertex.Key] > 0)
                     {
                         degPA[vertex.Key]++;
                     }
@@ -98,33 +110,23 @@ namespace GraphLibrary
             }
         }
 
-        private static List<int> GetNeighbors(int bestCandidate, Graph graph)
-        {
-            List<int> neighbors = new List<int>();
-
-            for(int i = 0; i < graph.VerticesCount(); i++)
-            {
-                if(graph.Edges[i, bestCandidate] > 0)
-                {
-                    neighbors.Add(i);
-                }
-            }
-
-            return neighbors;
-        }
-
-        private static int GetBestCandidate(Dictionary<int,int> candidates)
+        /// <summary>
+        /// Get vertex with the highest degree from G(PA)
+        /// </summary>
+        /// <param name="candidates"></param>
+        /// <returns>Vertex identifier</returns>
+        private static int GetBestCandidate(Dictionary<int, int> candidates)
         {
             int bestCandidate = -1;
             int maxDeg = -1;
-            
+
             foreach (var candidate in candidates)
             {
-                if(candidate.Value > maxDeg)
+                if (candidate.Value > maxDeg)
                 {
                     maxDeg = candidate.Value;
                     bestCandidate = candidate.Key;
-                } 
+                }
             }
 
             return bestCandidate;

@@ -9,19 +9,26 @@ namespace GraphDistance
         {
             try
             {
-                Graph g = new Graph(ReadMatrix());
-                Graph h = new Graph(ReadMatrix());
+                var g = new Graph(ReadMatrix());
+                var h = new Graph(ReadMatrix());
 
                 Console.WriteLine(g);
                 Console.WriteLine(h);
                 
                 var c = new CompatibilityGraph(g, h);
+
+                var threshold = 0.1;
+
+                var approximationAlgorithms = new ApproximationAlgorithms();
+
+                var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
+                
                 Console.WriteLine(c);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"could not create graphs: {e}");
-                System.Environment.Exit(1);
+                Environment.Exit(1);
             }
         }
 

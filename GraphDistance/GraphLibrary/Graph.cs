@@ -32,14 +32,26 @@ namespace GraphLibrary
             Edges = Matrix<double>.Build.DenseOfArray(edges);
         }
 
-        public int VerticesCount()
+        public List<int> GetNeighbors(int vertex)
         {
-            return Edges.RowCount;
+            List<int> neighbors = new();
+            
+            for (int i = 0; i < VerticesCount; i++)
+            {
+                if (Edges[i, vertex] > 0)
+                {
+                    neighbors.Add(i);
+                }
+            }
+
+            return neighbors;
         }
+
+        public int VerticesCount => Edges.RowCount;
 
         public override string ToString()
         {
-            int n = VerticesCount();
+            int n = VerticesCount;
 
             var stringBuilder = new StringBuilder();
             stringBuilder.Append($"Graph with {n} vertices.\n");
@@ -58,19 +70,19 @@ namespace GraphLibrary
 
     public class CompatibilityGraph : Graph
     {
-        private Dictionary<int, (int, int)> nodeMap;
-        public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount() * h.VerticesCount())
+        private readonly Dictionary<int, (int, int)> nodeMap;
+        public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount * h.VerticesCount)
         {
             nodeMap = new Dictionary<int, (int, int)>();
-            var nG = g.VerticesCount();
-            var nH = h.VerticesCount();
+            var nG = g.VerticesCount;
+            var nH = h.VerticesCount;
 
             for (int i = 0; i < nG * nH; i++)
             {
                 nodeMap.Add(i, (i / nG, i % nG));
             }
 
-            var n = VerticesCount();
+            var n = VerticesCount;
             for (var i = 0; i < n; i++)
             {
                 for (var j = 0; j < n; j++)
