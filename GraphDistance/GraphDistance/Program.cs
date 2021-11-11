@@ -10,15 +10,13 @@ namespace GraphDistance
             try
             {
                 Graph g = new Graph(ReadMatrix());
+                Graph h = new Graph(ReadMatrix());
+
                 Console.WriteLine(g);
-
-                var vertices = ApproximationAlgorithm.FindMaximumClique(g, 100);
-
-                foreach(var vertex in vertices)
-                {
-                    Console.Write($"{vertex}, ");
-                }
-                Console.WriteLine();
+                Console.WriteLine(h);
+                
+                var c = new CompatibilityGraph(g, h);
+                Console.WriteLine(c);
             }
             catch (Exception e)
             {
