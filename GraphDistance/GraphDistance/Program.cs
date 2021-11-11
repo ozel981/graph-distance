@@ -13,6 +13,8 @@ namespace GraphDistance
                 Graph h = new Graph(ReadMatrix());
                 Console.WriteLine(g);
                 Console.WriteLine(h);
+                var c = new CompatibilityGraph(g, h);
+                Console.WriteLine(c);
             }
             catch (Exception e)
             {
