@@ -8,7 +8,7 @@ namespace GraphLibrary
     public class Graph
     {
         public Matrix<double> Edges { get; }
-
+        public int VerticesCount => Edges.RowCount;
         public Graph(int verticesCount)
         {
             Edges = Matrix<double>.Build.Dense(verticesCount, verticesCount);
@@ -34,7 +34,7 @@ namespace GraphLibrary
 
         public List<int> GetNeighbors(int vertex)
         {
-            List<int> neighbors = new();
+            var neighbors = new List<int>();
             
             for (int i = 0; i < VerticesCount; i++)
             {
@@ -46,8 +46,6 @@ namespace GraphLibrary
 
             return neighbors;
         }
-
-        public int VerticesCount => Edges.RowCount;
 
         public override string ToString()
         {
@@ -95,7 +93,7 @@ namespace GraphLibrary
                     (var x, var y) = nodeMap[i];
                     (var a, var b) = nodeMap[j];
 
-                    if (Math.Abs(g.Edges[x, a] - h.Edges[y, b]) < Double.Epsilon &&
+                    if (Math.Abs(g.Edges[x, a] - h.Edges[y, b]) < double.Epsilon &&
                         x != a && y != b)
                     {
                         Edges[i, j] = 1;
