@@ -1,5 +1,6 @@
 ﻿using System;
 using GraphLibrary;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace GraphDistance
 {
@@ -14,7 +15,7 @@ namespace GraphDistance
 
                 Console.WriteLine(g);
                 Console.WriteLine(h);
-                
+
                 var c = new CompatibilityGraph(g, h);
 
                 var threshold = 0.1;
@@ -22,8 +23,13 @@ namespace GraphDistance
                 var approximationAlgorithms = new ApproximationAlgorithms();
 
                 var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
-                
-                Console.WriteLine(c);
+
+                c.ReorderAdjacencyMatrix(vertices);
+
+                var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+
+                Console.WriteLine(result);
+
             }
             catch (Exception e)
             {
