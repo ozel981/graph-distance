@@ -7,11 +7,11 @@ namespace GraphLibrary
 {
     public class Graph
     {
-        public Matrix<double> edges;
-
+        public Matrix<double> Edges { get; }
+        public int VerticesCount => Edges.RowCount;
         public Graph(int verticesCount)
         {
-            this.edges = Matrix<double>.Build.Dense(verticesCount, verticesCount);
+            Edges = Matrix<double>.Build.Dense(verticesCount, verticesCount);
         }
 
         public Graph(double[,] edges)
@@ -20,30 +20,44 @@ namespace GraphLibrary
             {
                 throw new ArgumentException($"invalid array rank: expected 2, got {edges.Rank}");
             }
+            
             var rowCount = edges.GetLength(0);
             var colCount = edges.GetLength(1);
+            
             if (rowCount != colCount)
             {
                 throw new ArgumentException($"row count ({rowCount}) differs from column count ({colCount})");
             }
-            this.edges = Matrix<double>.Build.DenseOfArray(edges);
+
+            Edges = Matrix<double>.Build.DenseOfArray(edges);
         }
 
-        public int VerticesCount()
+        public List<int> GetNeighbors(int vertex)
         {
-            return this.edges.RowCount;
+            var neighbors = new List<int>();
+            
+            for (int i = 0; i < VerticesCount; i++)
+            {
+                if (Edges[i, vertex] > 0)
+                {
+                    neighbors.Add(i);
+                }
+            }
+
+            return neighbors;
         }
 
         public override string ToString()
         {
-            int n = VerticesCount();
+            int n = VerticesCount;
+
             var stringBuilder = new StringBuilder();
             stringBuilder.Append($"Graph with {n} vertices.\n");
-            for(int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
-                for(int j = 0; j < n; j++)
+                for (int j = 0; j < n; j++)
                 {
-                    stringBuilder.Append($"{edges[i, j]}, ");
+                    stringBuilder.Append($"{Edges[i, j]}, ");
                 }
                 stringBuilder.Append('\n');
             }
@@ -54,18 +68,19 @@ namespace GraphLibrary
 
     public class CompatibilityGraph : Graph
     {
-        private  Dictionary<int, (int, int)> NodeMap;
-        public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount() * h.VerticesCount())
+        private readonly Dictionary<int, (int, int)> nodeMap;
+        public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount * h.VerticesCount)
         {
-            NodeMap = new Dictionary<int, (int, int)>();
-            var nG = g.VerticesCount();
-            var nH = h.VerticesCount();
+            nodeMap = new Dictionary<int, (int, int)>();
+            var nG = g.VerticesCount;
+            var nH = h.VerticesCount;
+
             for (int i = 0; i < nG * nH; i++)
             {
-                NodeMap[i] = (i/nG, i%nG);
+                nodeMap.Add(i, (i / nG, i % nG));
             }
 
-            var n = VerticesCount();
+            var n = VerticesCount;
             for (var i = 0; i < n; i++)
             {
                 for (var j = 0; j < n; j++)
@@ -74,12 +89,14 @@ namespace GraphLibrary
                     {
                         continue;
                     }
-                    (var x, var y) = NodeMap[i];
-                    (var a, var b) = NodeMap[j];
-                    if (Math.Abs(g.edges[x, a] - h.edges[y, b]) < Double.Epsilon &&
+
+                    (var x, var y) = nodeMap[i];
+                    (var a, var b) = nodeMap[j];
+
+                    if (Math.Abs(g.Edges[x, a] - h.Edges[y, b]) < double.Epsilon &&
                         x != a && y != b)
                     {
-                        this.edges[i, j] = 1;
+                        Edges[i, j] = 1;
                     }
                 }
             }

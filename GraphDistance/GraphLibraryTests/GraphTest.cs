@@ -39,7 +39,7 @@ namespace GraphLibraryTests
                 {0, 0, 0, 1, 0, 1, 0, 0, 0, },
                 {0, 0, 0, 1, 1, 0, 0, 0, 0, },
             };
-            AssertMatricesEqual(expectedEdges, actual.edges.ToArray());
+            AssertMatricesEqual(expectedEdges, actual.Edges.ToArray());
         }
         
         private void AssertMatricesEqual(double[,] exp, double[,] act)
