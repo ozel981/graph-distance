@@ -7,7 +7,23 @@ namespace GraphDistance
     {
         static void Main(string[] args)
         {
-            try
+            var exactAlgorithms = new ExactAlgorithm();
+
+            var edges = new double[,]
+            {
+                { 0, 1, 1, 1, 1, 1, 1 },
+                { 1, 0, 1, 1, 1, 1, 1 },
+                { 1, 1, 0, 1, 1, 1, 1 },
+                { 1, 1, 1, 0, 1, 1, 1 },
+                { 1, 1, 1, 1, 0, 1, 1 },
+                { 1, 1, 1, 1, 1, 0, 1 },
+                { 1, 1, 1, 1, 1, 1, 0 },
+            };
+
+            var g = new Graph(edges);
+
+            exactAlgorithms.FindMaximumClique(g);
+            /*try
             {
                 var g = new Graph(ReadMatrix());
                 var h = new Graph(ReadMatrix());
@@ -29,7 +45,7 @@ namespace GraphDistance
             {
                 Console.WriteLine($"could not create graphs: {e}");
                 Environment.Exit(1);
-            }
+            }*/
         }
 
         static double[,] ReadMatrix()
