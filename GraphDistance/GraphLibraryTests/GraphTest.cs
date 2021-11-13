@@ -1,12 +1,40 @@
 using Xunit;
 
 using GraphLibrary;
+using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
+using FluentAssertions;
 
 namespace GraphLibraryTests
 {
     public class CompatibilityGraphTests
     {
         private readonly int precision = 2;
+        
+        [Fact]
+        public void ReorderAdjacencyMatrix()
+        {
+            var edges = new double[,]
+            {
+                {1, 1, 0, 0 },
+                {1, 1, 0, 0 },
+                {0, 0, 0, 0 },
+                {0, 0, 0, 0 }
+            };
+
+            var g = new Graph(edges);
+            g.ReorderAdjacencyMatrix(new List<int> { 2, 3 });
+
+            var expectedAdjacencyMatrix = Matrix<double>.Build.DenseOfArray(new double[,]
+            {
+                {0, 0, 0, 0 },
+                {0, 0, 0, 0 },
+                {0, 0, 1, 1 },
+                {0, 0, 1, 1 }
+            });
+
+            g.Edges.ToArray().Should().Equals(expectedAdjacencyMatrix.ToArray());
+        }
 
         // This test case is taken from http://www.lsis.org/tuples/workshop/wscp_bgbtp_1.pdf, fig. 2
         [Fact]
