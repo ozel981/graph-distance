@@ -22,7 +22,7 @@ namespace GraphLibrary
 
         private void FindMaxClique(ref Graph graph, ref List<int> clique, ref List<int> rejected, ref List<int> candidates)
         {
-            while(candidates.Count > 0)
+            while(candidates.Any())
             {
                 List<int> localRejected = new List<int>(rejected);
                 List<int> localCandidates = new List<int>(candidates);
