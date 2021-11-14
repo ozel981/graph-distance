@@ -32,7 +32,7 @@ namespace GraphLibrary
                 List<int> neighbours = graph.GetNeighbors(vertex);
                 localRejected.RemoveAll((x) => !neighbours.Contains(x));
                 localCandidates.RemoveAll((x) => !neighbours.Contains(x));
-                if (localRejected.Count == 0 && localCandidates.Count == 0)
+                if (!localRejected.Any() && !localCandidates.Any())
                 {
                     if (clique.Count > maxClique.Count)
                     {
