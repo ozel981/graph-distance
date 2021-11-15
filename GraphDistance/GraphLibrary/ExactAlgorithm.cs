@@ -20,9 +20,9 @@ namespace GraphLibrary
             }
         }
 
-        private void FindMaxClique(ref Graph graph, ref List<int> clique, ref List<int> rejected, ref List<int> candidates)
+        private void FindMaximumCliqueRec(ref Graph graph, ref List<int> clique, ref List<int> rejected, ref List<int> candidates)
         {
-            while(candidates.Any())
+            while (candidates.Any())
             {
                 List<int> localRejected = new List<int>(rejected);
                 List<int> localCandidates = new List<int>(candidates);
@@ -38,9 +38,10 @@ namespace GraphLibrary
                     {
                         maxClique = new List<int>(clique);
                     }
-                } else
+                }
+                else
                 {
-                    FindMaxClique(ref graph, ref clique, ref localRejected, ref localCandidates);
+                    FindMaximumCliqueRec(ref graph, ref clique, ref localRejected, ref localCandidates);
                 }
                 clique.Remove(vertex);
                 rejected.Add(vertex);
@@ -55,7 +56,7 @@ namespace GraphLibrary
             List<int> rejected;
             List<int> candidates;
             PrepareSets(graph.VerticesCount, out clique, out rejected, out candidates);
-            FindMaxClique(ref graph, ref clique, ref rejected, ref candidates);
+            FindMaximumCliqueRec(ref graph, ref clique, ref rejected, ref candidates);
 
             return maxClique;
         }
