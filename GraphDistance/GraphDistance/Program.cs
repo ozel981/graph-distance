@@ -30,13 +30,21 @@ namespace GraphDistance
                 var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
                 var result2 = MatricesDistance.ExtendedTaxicabGeometry(c2.G.Edges, c2.H.Edges);
 
+                Console.WriteLine("Graph G:");
+                Console.WriteLine(g);
                 Console.WriteLine(c.G);
+                Console.WriteLine("Graph H:");
+                Console.WriteLine(h);
                 Console.WriteLine(c.H);
                 Console.WriteLine($"Approximate clique size: {vertices.Count}");
                 Console.WriteLine($"Approximate algorithm result: {result}");
 
                 Console.WriteLine();
+                Console.WriteLine("Graph G:");
+                Console.WriteLine(g);
                 Console.WriteLine(c2.G);
+                Console.WriteLine("Graph H:");
+                Console.WriteLine(h);
                 Console.WriteLine(c2.H);
                 Console.WriteLine($"Exact clique size: {verticesExact.Count}");
                 Console.WriteLine($"Exact algorithm result: {result2}");
