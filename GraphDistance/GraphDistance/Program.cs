@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GraphLibrary;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -12,50 +13,71 @@ namespace GraphDistance
             {
                 var g = new Graph(ReadMatrix());
                 var h = new Graph(ReadMatrix());
+                var algorithms = ReadAlgorithms();
+                if (algorithms.Contains("a"))
+                {
+                    var threshold = 0.2;
+                    var seed = 123;
+                    RunApproximationAlgorithm(g, h, threshold, seed);
+                }
 
-                var c = new CompatibilityGraph(g, h);
-                var c2 = new CompatibilityGraph(g, h);
-
-                var threshold = 0.2;
-
-                var approximationAlgorithms = new ApproximationAlgorithms(123);
-                var exactAlgorithms = new ExactAlgorithm();
-
-                var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
-                var verticesExact = exactAlgorithms.FindMaximumClique(c);
-
-                c.ReorderAdjacencyMatrix(vertices);
-                c2.ReorderAdjacencyMatrix(verticesExact);
-
-                var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
-                var result2 = MatricesDistance.ExtendedTaxicabGeometry(c2.G.Edges, c2.H.Edges);
-
-                Console.WriteLine("Graph G:");
-                Console.WriteLine(g);
-                Console.WriteLine(c.G);
-                Console.WriteLine("Graph H:");
-                Console.WriteLine(h);
-                Console.WriteLine(c.H);
-                Console.WriteLine($"Approximate clique size: {vertices.Count}");
-                Console.WriteLine($"Approximate algorithm result: {result}");
-
-                Console.WriteLine();
-                Console.WriteLine("Graph G:");
-                Console.WriteLine(g);
-                Console.WriteLine(c2.G);
-                Console.WriteLine("Graph H:");
-                Console.WriteLine(h);
-                Console.WriteLine(c2.H);
-                Console.WriteLine($"Exact clique size: {verticesExact.Count}");
-                Console.WriteLine($"Exact algorithm result: {result2}");
+                if (algorithms.Contains("d"))
+                {
+                    RunExactAlgorithm(g, h);
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"could not create graphs: {e}");
+                Console.WriteLine($"nie można obliczyć dystansu między grafami: {e.Message}");
                 Environment.Exit(1);
             }
         }
 
+        static void RunExactAlgorithm(Graph g, Graph h)
+        {
+            Console.WriteLine("\n===== ALGORYTM DOKŁADNY =====\n");
+
+            var c = new CompatibilityGraph(g, h);
+
+            var exactAlgorithms = new ExactAlgorithm();
+
+            var vertices = exactAlgorithms.FindMaximumClique(c);
+
+            c.ReorderAdjacencyMatrix(vertices);
+
+            var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+
+            Console.WriteLine("Graf G:");
+            Console.WriteLine(g);
+            Console.WriteLine(c.G);
+            Console.WriteLine("Graf H:");
+            Console.WriteLine(h);
+            Console.WriteLine(c.H);
+            Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
+            Console.WriteLine($"Wynik dokładnego algorytmu: {result}");
+        }
+        static void RunApproximationAlgorithm(Graph g, Graph h, double threshold, int seed)
+        {
+            Console.WriteLine("\n===== ALGORYTM APROKSYMACYJNY =====\n");
+            var c = new CompatibilityGraph(g, h);
+
+            var approximationAlgorithms = new ApproximationAlgorithms(seed);
+
+            var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
+
+            c.ReorderAdjacencyMatrix(vertices);
+
+            var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+
+            Console.WriteLine("Graf G:");
+            Console.WriteLine(g);
+            Console.WriteLine(c.G);
+            Console.WriteLine("Graf H:");
+            Console.WriteLine(h);
+            Console.WriteLine(c.H);
+            Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
+            Console.WriteLine($"Wynik aproksymacyjnego algorytmu: {result}");
+        }
         static double[,] ReadMatrix()
         {
             var n = Convert.ToInt32(Console.ReadLine());
@@ -73,6 +95,26 @@ namespace GraphDistance
                 }
             }
             return edges;
+        }
+
+        static List<string> ReadAlgorithms()
+        {
+            Console.WriteLine("Lista algorytmów:");
+            Console.WriteLine("a) algorytm aproksymacyjny");
+            Console.WriteLine("d) algorytm dokładny");
+
+            Console.WriteLine("Podaj algorytmy oddzielone spacją: ");
+            var algos = Console.ReadLine()?.Split();
+
+            var availableAlgorithms = new List<string> {"a", "d"};
+            foreach (var a in algos)
+            {
+                if (!availableAlgorithms.Contains(a))
+                {
+                    throw new Exception($"algorym {a} nie jest obsługiwany");
+                }
+            }
+            return new List<string>(algos);
         }
     }
 }
