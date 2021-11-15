@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace GraphLibrary
 {
-    public class Graph
+    public class Graph : ICloneable
     {
         public Matrix<double> Edges { get; protected set; }
         public int VerticesCount => Edges.RowCount;
@@ -115,6 +115,11 @@ namespace GraphLibrary
 
             Edges = matrix;
         }
+
+        public object Clone()
+        {
+            return new Graph(Edges.Clone().ToArray());
+        }
     }
 
     public class CompatibilityGraph : Graph
@@ -125,16 +130,16 @@ namespace GraphLibrary
         private readonly Dictionary<int, (int, int)> nodeMap;
         public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount * h.VerticesCount)
         {
-            G = g;
-            H = h;
+            G = (Graph)g.Clone();
+            H = (Graph)h.Clone();
             nodeMap = new Dictionary<int, (int, int)>();
 
             var nG = g.VerticesCount;
             var nH = h.VerticesCount;
-
+            var max = Math.Max(nG, nH);
             for (int i = 0; i < nG * nH; i++)
             {
-                nodeMap.Add(i, (i / nG, i % nG));
+                nodeMap.Add(i, (i / max, i % max));
             }
 
             UpdateAdjacencyMatrix();
