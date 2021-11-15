@@ -136,10 +136,10 @@ namespace GraphLibrary
 
             var nG = g.VerticesCount;
             var nH = h.VerticesCount;
-
+            var max = Math.Max(nG, nH);
             for (int i = 0; i < nG * nH; i++)
             {
-                nodeMap.Add(i, (i / nG, i % nG));
+                nodeMap.Add(i, (i / max, i % max));
             }
 
             UpdateAdjacencyMatrix();

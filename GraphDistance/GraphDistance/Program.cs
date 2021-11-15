@@ -13,22 +13,16 @@ namespace GraphDistance
                 var g = new Graph(ReadMatrix());
                 var h = new Graph(ReadMatrix());
 
-                Console.WriteLine(g);
-                Console.WriteLine(h);
-
                 var c = new CompatibilityGraph(g, h);
                 var c2 = new CompatibilityGraph(g, h);
 
-                var threshold = 0.1;
+                var threshold = 0.2;
 
-                var approximationAlgorithms = new ApproximationAlgorithms(127);
+                var approximationAlgorithms = new ApproximationAlgorithms(123);
                 var exactAlgorithms = new ExactAlgorithm();
 
                 var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
                 var verticesExact = exactAlgorithms.FindMaximumClique(c);
-                
-                Console.WriteLine(vertices.Count);
-                Console.WriteLine($"Exact: {verticesExact.Count}");
 
                 c.ReorderAdjacencyMatrix(vertices);
                 c2.ReorderAdjacencyMatrix(verticesExact);
@@ -36,9 +30,16 @@ namespace GraphDistance
                 var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
                 var result2 = MatricesDistance.ExtendedTaxicabGeometry(c2.G.Edges, c2.H.Edges);
 
-                Console.WriteLine(result);
-                Console.WriteLine(result2);
+                Console.WriteLine(c.G);
+                Console.WriteLine(c.H);
+                Console.WriteLine($"Approximate clique size: {vertices.Count}");
+                Console.WriteLine($"Approximate algorithm result: {result}");
 
+                Console.WriteLine();
+                Console.WriteLine(c2.G);
+                Console.WriteLine(c2.H);
+                Console.WriteLine($"Exact clique size: {verticesExact.Count}");
+                Console.WriteLine($"Exact algorithm result: {result2}");
             }
             catch (Exception e)
             {
