@@ -17,18 +17,27 @@ namespace GraphDistance
                 Console.WriteLine(h);
 
                 var c = new CompatibilityGraph(g, h);
+                var c2 = new CompatibilityGraph(g, h);
 
                 var threshold = 0.1;
 
-                var approximationAlgorithms = new ApproximationAlgorithms();
+                var approximationAlgorithms = new ApproximationAlgorithms(127);
+                var exactAlgorithms = new ExactAlgorithm();
 
                 var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
+                var verticesExact = exactAlgorithms.FindMaximumClique(c);
+                
+                Console.WriteLine(vertices.Count);
+                Console.WriteLine($"Exact: {verticesExact.Count}");
 
                 c.ReorderAdjacencyMatrix(vertices);
+                c2.ReorderAdjacencyMatrix(verticesExact);
 
                 var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+                var result2 = MatricesDistance.ExtendedTaxicabGeometry(c2.G.Edges, c2.H.Edges);
 
                 Console.WriteLine(result);
+                Console.WriteLine(result2);
 
             }
             catch (Exception e)
