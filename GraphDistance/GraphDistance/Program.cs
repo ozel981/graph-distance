@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Text;
@@ -39,6 +40,7 @@ namespace GraphDistance
         {
             Console.WriteLine("\n===== ALGORYTM DOKŁADNY =====\n");
 
+            var watch = Stopwatch.StartNew();
             var c = new CompatibilityGraph(g, h);
 
             var exactAlgorithms = new ExactAlgorithm();
@@ -48,6 +50,7 @@ namespace GraphDistance
             c.ReorderAdjacencyMatrix(vertices);
 
             var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+            watch.Stop();
 
             Console.WriteLine("Graf G:");
             Console.WriteLine(g);
@@ -56,11 +59,14 @@ namespace GraphDistance
             Console.WriteLine(h);
             Console.WriteLine(c.H);
             Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
-            Console.WriteLine($"Wynik dokładnego algorytmu: {result}");
+            Console.WriteLine($"Wynik dokładnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
+
         static void RunApproximationAlgorithm(Graph g, Graph h, double threshold, int seed)
         {
             Console.WriteLine("\n===== ALGORYTM APROKSYMACYJNY =====\n");
+            
+            var watch = Stopwatch.StartNew();
             var c = new CompatibilityGraph(g, h);
 
             var approximationAlgorithms = new ApproximationAlgorithms(seed);
@@ -70,6 +76,7 @@ namespace GraphDistance
             c.ReorderAdjacencyMatrix(vertices);
 
             var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+            watch.Stop();
 
             Console.WriteLine("Graf G:");
             Console.WriteLine(g);
@@ -78,14 +85,15 @@ namespace GraphDistance
             Console.WriteLine(h);
             Console.WriteLine(c.H);
             Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
-            Console.WriteLine($"Wynik aproksymacyjnego algorytmu: {result}");
+            Console.WriteLine($"Wynik aproksymacyjnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
+
         static double[,] ReadMatrixFromStdin()
         {
-            Console.WriteLine("Podaj liczbę wierzchołków grafu:");
+            Console.WriteLine("\nPodaj liczbę wierzchołków grafu:");
             var n = Convert.ToInt32(Console.ReadLine());
             double[,] edges = new double[n,n];
-            Console.WriteLine("Podaj macierz sąsiedztwa grafu:");
+            Console.WriteLine("\nPodaj macierz sąsiedztwa grafu:");
             for (int i = 0; i < n; i++)
             {
                 var row = Console.ReadLine()?.Split();
@@ -104,7 +112,7 @@ namespace GraphDistance
         static (Graph g, Graph h) ReadGraphs()
         {
             Console.WriteLine("Podaj ścieżkę do pliku z wejściem (jeśli grafy mają być wpisane" +
-                              "ręcznie, wciśnij ENTER):");
+                              " ręcznie, wciśnij ENTER):");
             var path = Console.ReadLine();
             if (String.IsNullOrEmpty(path))
             {
@@ -155,11 +163,11 @@ namespace GraphDistance
 
         static List<string> ReadAlgorithms()
         {
-            Console.WriteLine("Lista algorytmów:");
+            Console.WriteLine("\nLista algorytmów:");
             Console.WriteLine("a) algorytm aproksymacyjny");
             Console.WriteLine("d) algorytm dokładny");
 
-            Console.WriteLine("Podaj algorytmy oddzielone spacją: ");
+            Console.WriteLine("\nPodaj algorytmy oddzielone spacją: ");
             var algos = Console.ReadLine()?.Split();
 
             var availableAlgorithms = new List<string> {"a", "d"};
