@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Xml.Linq;
 using GraphLibrary;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -52,12 +53,11 @@ namespace GraphDistance
             var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
             watch.Stop();
 
-            Console.WriteLine("Graf G:");
-            Console.WriteLine(g);
-            Console.WriteLine(c.G);
-            Console.WriteLine("Graf H:");
-            Console.WriteLine(h);
-            Console.WriteLine(c.H);
+            Console.WriteLine("Grafy G i H przed zmianą etykiet wierzchołków");
+            Console.WriteLine(TwoGraphsToString(g, h));
+            
+            Console.WriteLine("Grafy G i H po zmianie etykiet wierzchołków");
+            Console.WriteLine(TwoGraphsToString(c.G, c.H));
             Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
             Console.WriteLine($"Wynik dokładnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
@@ -77,17 +77,57 @@ namespace GraphDistance
 
             var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
             watch.Stop();
-
-            Console.WriteLine("Graf G:");
-            Console.WriteLine(g);
-            Console.WriteLine(c.G);
-            Console.WriteLine("Graf H:");
-            Console.WriteLine(h);
-            Console.WriteLine(c.H);
+            Console.WriteLine("Grafy G i H przed zmianą etykiet wierzchołków");
+            Console.WriteLine(TwoGraphsToString(g, h));
+            
+            Console.WriteLine("Grafy G i H po zmianie etykiet wierzchołków");
+            Console.WriteLine(TwoGraphsToString(c.G, c.H));
             Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
             Console.WriteLine($"Wynik aproksymacyjnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
 
+        static string TwoGraphsToString(Graph g, Graph h)
+        {
+            int n = g.VerticesCount;
+            int m = h.VerticesCount;
+            if (m > n)
+            {
+                (g, h) = (h, g);
+                (n, m) = (m, n);
+            }
+
+            var stringBuilder = new StringBuilder();
+            var gLabel = $"Graf o liczbie {n} wierzchołków";
+            stringBuilder.Append(gLabel);
+            var gRowLength = Math.Max(n * 3 + 5, gLabel.Length + 5);
+            for (int i = 0; i < gRowLength - gLabel.Length; i++)
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append($"Graf o liczbie {m} wierzchołków\n");
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    stringBuilder.Append($"{g.Edges[i, j]}, ");
+                }
+
+                if (i < m)
+                {
+                    for (int j = 0; j < gRowLength - n * 3; j++)
+                    {
+                        stringBuilder.Append(" ");
+                    }
+                    for (int j = 0; j < m; j++)
+                    {
+                        stringBuilder.Append($"{h.Edges[i, j]}, ");
+                    }
+                }
+                stringBuilder.Append('\n');
+            }
+
+            return stringBuilder.ToString();
+        }
         static double[,] ReadMatrixFromStdin()
         {
             Console.WriteLine("\nPodaj liczbę wierzchołków grafu:");
