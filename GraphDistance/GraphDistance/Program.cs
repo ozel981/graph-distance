@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GraphLibrary;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -14,21 +15,26 @@ namespace GraphDistance
                 var h = new Graph(ReadMatrix());
 
                 var c = new CompatibilityGraph(g, h);
+                var c1 = new CompatibilityGraph(g, h);
                 var c2 = new CompatibilityGraph(g, h);
 
                 var threshold = 0.2;
 
                 var approximationAlgorithms = new ApproximationAlgorithms(123);
+                var secondApproximationAlgorithms = new ApproximationSecondAlgorithm();
                 var exactAlgorithms = new ExactAlgorithm();
 
                 var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
+                var vertices2 = secondApproximationAlgorithms.FindMaximumClique(c);
                 var verticesExact = exactAlgorithms.FindMaximumClique(c);
 
                 c.ReorderAdjacencyMatrix(vertices);
+                c1.ReorderAdjacencyMatrix(vertices2);
                 c2.ReorderAdjacencyMatrix(verticesExact);
 
                 var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
-                var result2 = MatricesDistance.ExtendedTaxicabGeometry(c2.G.Edges, c2.H.Edges);
+                var result2 = MatricesDistance.ExtendedTaxicabGeometry(c1.G.Edges, c1.H.Edges);
+                var result3 = MatricesDistance.ExtendedTaxicabGeometry(c2.G.Edges, c2.H.Edges);
 
                 Console.WriteLine("Graph G:");
                 Console.WriteLine(g);
@@ -39,6 +45,15 @@ namespace GraphDistance
                 Console.WriteLine($"Approximate clique size: {vertices.Count}");
                 Console.WriteLine($"Approximate algorithm result: {result}");
 
+                Console.WriteLine("Graph G:");
+                Console.WriteLine(g);
+                Console.WriteLine(c1.G);
+                Console.WriteLine("Graph H:");
+                Console.WriteLine(h);
+                Console.WriteLine(c1.H);
+                Console.WriteLine($"Second approximate clique size: {vertices.Count}");
+                Console.WriteLine($"Second approximate algorithm result: {result2}");
+
                 Console.WriteLine();
                 Console.WriteLine("Graph G:");
                 Console.WriteLine(g);
@@ -47,7 +62,7 @@ namespace GraphDistance
                 Console.WriteLine(h);
                 Console.WriteLine(c2.H);
                 Console.WriteLine($"Exact clique size: {verticesExact.Count}");
-                Console.WriteLine($"Exact algorithm result: {result2}");
+                Console.WriteLine($"Exact algorithm result: {result3}");
             }
             catch (Exception e)
             {
