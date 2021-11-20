@@ -52,7 +52,7 @@ namespace GraphLibrary
             int n = VerticesCount;
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append($"Graph with {n} vertices.\n");
+            stringBuilder.Append($"Graf o liczbie wierzchołków: {n}\n");
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
