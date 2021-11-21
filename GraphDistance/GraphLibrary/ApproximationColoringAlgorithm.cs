@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace GraphLibrary
 {
-    public class ApproximationSecondAlgorithm
+    public class ApproximationColoringAlgorithm
     {
         List<int> maxClique;
         List<int> actualClique;
         Graph graph;
 
-        public ApproximationSecondAlgorithm()
+        public ApproximationColoringAlgorithm()
         {
             maxClique = new List<int>();
             actualClique = new List<int>();

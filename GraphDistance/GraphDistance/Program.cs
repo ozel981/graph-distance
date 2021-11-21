@@ -25,6 +25,10 @@ namespace GraphDistance
                     RunApproximationAlgorithm(g, h, threshold, seed);
                 }
 
+                if (algorithms.Contains("k"))
+                {
+                    RunColoringApproximationAlgorithm(g, h);
+                }
                 if (algorithms.Contains("d"))
                 {
                     RunExactAlgorithm(g, h);
@@ -84,6 +88,30 @@ namespace GraphDistance
             Console.WriteLine(TwoGraphsToString(c.G, c.H));
             Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
             Console.WriteLine($"Wynik aproksymacyjnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
+        }
+        
+        static void RunColoringApproximationAlgorithm(Graph g, Graph h)
+        {
+            Console.WriteLine("\n===== ALGORYTM APROKSYMACYJNY Z KOLOROWANIEM =====\n");
+            
+            var watch = Stopwatch.StartNew();
+            var c = new CompatibilityGraph(g, h);
+
+            var approximationAlgorithm = new ApproximationColoringAlgorithm();
+
+            var vertices = approximationAlgorithm.FindMaximumClique(c);
+
+            c.ReorderAdjacencyMatrix(vertices);
+
+            var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+            watch.Stop();
+            Console.WriteLine("Grafy G i H przed zmianą etykiet wierzchołków");
+            Console.WriteLine(TwoGraphsToString(g, h));
+            
+            Console.WriteLine("Grafy G i H po zmianie etykiet wierzchołków");
+            Console.WriteLine(TwoGraphsToString(c.G, c.H));
+            Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
+            Console.WriteLine($"Wynik aproksymacyjnego algorytmu z kolorowaniem: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
 
         static string TwoGraphsToString(Graph g, Graph h)
@@ -205,12 +233,13 @@ namespace GraphDistance
         {
             Console.WriteLine("\nLista algorytmów:");
             Console.WriteLine("a) algorytm aproksymacyjny");
+            Console.WriteLine("k) algorytm aproksymacyjny z kolorowaniem");
             Console.WriteLine("d) algorytm dokładny");
 
-            Console.WriteLine("\nPodaj algorytmy oddzielone spacją: ");
+            Console.WriteLine("\nPodaj litery oznaczające algorytmy oddzielone spacją: ");
             var algos = Console.ReadLine()?.Split();
 
-            var availableAlgorithms = new List<string> {"a", "d"};
+            var availableAlgorithms = new List<string> {"a", "d", "k"};
             foreach (var a in algos)
             {
                 if (!availableAlgorithms.Contains(a))
