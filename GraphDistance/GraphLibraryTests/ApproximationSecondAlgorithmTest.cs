@@ -14,7 +14,7 @@ namespace GraphLibraryTests
         [Fact]
         public void FindMaximumClique0()
         {
-            var exactAlgorithms = new ApproximationSecondAlgorithm();
+            var exactAlgorithms = new ApproximationColoringAlgorithm();
             var expected = new List<int> { 1, 2, 3, 4 };
 
             var edges = new double[,]
@@ -37,7 +37,7 @@ namespace GraphLibraryTests
         [Fact]
         public void FindMaximumClique1()
         {
-            var exactAlgorithms = new ApproximationSecondAlgorithm();
+            var exactAlgorithms = new ApproximationColoringAlgorithm();
             var expected = new List<int> { 2, 3, 4 };
 
             var edges = new double[,]
@@ -60,7 +60,7 @@ namespace GraphLibraryTests
         [Fact]
         public void FindMaximumClique2()
         {
-            var exactAlgorithms = new ApproximationSecondAlgorithm();
+            var exactAlgorithms = new ApproximationColoringAlgorithm();
             var expected = new List<int> { 0, 1, 2, 3, 4, 5 };
 
             var edges = new double[,]
