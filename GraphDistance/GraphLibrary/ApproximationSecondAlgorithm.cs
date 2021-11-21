@@ -16,41 +16,44 @@ namespace GraphLibrary
         {
             maxClique = new List<int>();
             actualClique = new List<int>();
-            graph = null;
         }
 
-        public bool IsColorExistInSet(Dictionary<int, int> colouring, List<int> neighbours, int color)
+        private bool DoesColorExistInSet(Dictionary<int, int> coloring, List<int> neighbours, int color)
         {
             foreach (int neighbour in neighbours)
             {
-                if (colouring.ContainsKey(neighbour))
+                if (coloring.ContainsKey(neighbour))
                 {
-                    if (colouring[neighbour] == color)
+                    if (coloring[neighbour] == color)
                         return true;
                 }
             }
             return false;
         }
-        public Dictionary<int, int> ColorVertices(ref List<int> verices)
+
+        private Dictionary<int, int> ColorVertices(ref List<int> vertices)
         {
-            Dictionary<int, int> colouring = new Dictionary<int, int>();
-            foreach (int verice in verices)
+            var coloring = new Dictionary<int, int>();
+            foreach (int vertex in vertices)
             {
                 int i = 0;
-                while (IsColorExistInSet(colouring,graph.GetNeighbors(verice), i))
+                while (DoesColorExistInSet(coloring,graph.GetNeighbors(vertex), i))
                     i++;
-                colouring.Add(verice, i);
+                coloring.Add(vertex, i);
             }
-            verices.Sort((a, b) => {
-                if (colouring[a] > colouring[b])
+
+            vertices.Sort((a, b) => {
+                if(coloring[a] == coloring[b])
+                    return 0;
+                else if (coloring[a] > coloring[b])
                     return 1;
                 else
                     return -1;
             });
-            return colouring;
+            return coloring;
         }
 
-        public void FindMaximumCliqueRef(List<int> candidates, Dictionary<int, int> colouring)
+        private void FindMaximumCliqueRec(List<int> candidates, Dictionary<int, int> coloring)
         {
             while (candidates.Any())
             {
@@ -58,10 +61,10 @@ namespace GraphLibrary
 
                 candidates.Remove(vertex);
 
-                if (colouring[vertex] + actualClique.Count > maxClique.Count)
+                if (coloring[vertex] + actualClique.Count > maxClique.Count)
                 {
                     actualClique.Add(vertex);
-                    List<int> newCandidates = new List<int>();
+                    var newCandidates = new List<int>();
                     foreach (int neighbor in graph.GetNeighbors(vertex))
                     {
                         if (candidates.Contains(neighbor))
@@ -72,7 +75,7 @@ namespace GraphLibrary
 
                     if (newCandidates.Any())
                     {
-                        FindMaximumCliqueRef(newCandidates, ColorVertices(ref newCandidates));
+                        FindMaximumCliqueRec(newCandidates, ColorVertices(ref newCandidates));
                     }
                     else if (actualClique.Count > maxClique.Count)
                     {
@@ -86,12 +89,12 @@ namespace GraphLibrary
         public List<int> FindMaximumClique(Graph graph)
         {
             this.graph = graph;
-            List<int> candidates = new List<int>();
+            var candidates = new List<int>();
             for (int i = 0; i < graph.VerticesCount; i++)
             {
                 candidates.Add(i);
             }
-            FindMaximumCliqueRef(candidates, ColorVertices(ref candidates));
+            FindMaximumCliqueRec(candidates, ColorVertices(ref candidates));
 
             return maxClique;
         }
