@@ -37,13 +37,14 @@ namespace GraphLibrary
             foreach (int vertex in vertices)
             {
                 int i = 0;
-                while (DoesColorExistInSet(coloring,graph.GetNeighbors(vertex), i))
+                while (DoesColorExistInSet(coloring, graph.GetNeighbors(vertex), i))
                     i++;
                 coloring.Add(vertex, i);
             }
 
-            vertices.Sort((a, b) => {
-                if(coloring[a] == coloring[b])
+            vertices.Sort((a, b) =>
+            {
+                if (coloring[a] == coloring[b])
                     return 0;
                 else if (coloring[a] > coloring[b])
                     return 1;
