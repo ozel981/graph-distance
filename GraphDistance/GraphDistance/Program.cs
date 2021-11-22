@@ -37,8 +37,10 @@ namespace GraphDistance
             catch (Exception e)
             {
                 Console.WriteLine($"nie można obliczyć dystansu między grafami: {e.Message}");
-                Environment.Exit(1);
             }
+
+            Console.WriteLine("Naciśnij enter aby zakończyć!");
+            Console.ReadLine();
         }
 
         static void RunExactAlgorithm(Graph g, Graph h)
