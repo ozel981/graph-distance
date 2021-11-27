@@ -38,13 +38,28 @@ namespace GraphLibrary
 
             for (int i = 0; i < VerticesCount; i++)
             {
-                if (Edges[i, vertex] > 0)
+                if (Edges[i, vertex] > 0 && vertex != i)
                 {
                     neighbors.Add(i);
                 }
             }
 
             return neighbors;
+        }
+
+        public int GetDegree(int vertex)
+        {
+            int degree = 0;
+
+            for (int i = 0; i < VerticesCount; i++)
+            {
+                if (Edges[i, vertex] > 0 && vertex != i)
+                {
+                    degree++;
+                }
+            }
+
+            return degree;
         }
 
         public override string ToString()
