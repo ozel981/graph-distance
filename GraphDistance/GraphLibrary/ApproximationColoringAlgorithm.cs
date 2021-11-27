@@ -9,13 +9,11 @@ namespace GraphLibrary
     public class ApproximationColoringAlgorithm
     {
         List<int> maxClique;
-        List<int> actualClique;
         Graph graph;
 
         public ApproximationColoringAlgorithm()
         {
             maxClique = new List<int>();
-            actualClique = new List<int>();
         }
 
         private bool DoesColorExistInSet(Dictionary<int, int> coloring, List<int> neighbours, int color)
@@ -31,7 +29,22 @@ namespace GraphLibrary
             return false;
         }
 
-        private Dictionary<int, int> ColorVertices(ref List<int> vertices)
+        private int GetVertexWithMaxColor(Dictionary<int, int> coloring)
+        {
+            int maxVertex = coloring.First().Key;
+            int maxColor = coloring.First().Value;
+            foreach (var vertex in coloring)
+            {
+                if (vertex.Value > maxColor)
+                {
+                    maxVertex = vertex.Key;
+                    maxColor = vertex.Value;
+                }
+            }
+            return maxVertex;
+        }
+
+        private Dictionary<int, int> ColorVertices(List<int> vertices)
         {
             var coloring = new Dictionary<int, int>();
             foreach (int vertex in vertices)
@@ -41,61 +54,40 @@ namespace GraphLibrary
                     i++;
                 coloring.Add(vertex, i);
             }
-
-            vertices.Sort((a, b) =>
-            {
-                if (coloring[a] == coloring[b])
-                    return 0;
-                else if (coloring[a] > coloring[b])
-                    return 1;
-                else
-                    return -1;
-            });
             return coloring;
-        }
-
-        private void FindMaximumCliqueRec(List<int> candidates, Dictionary<int, int> coloring)
-        {
-            while (candidates.Any())
-            {
-                int vertex = candidates.Last();
-
-                candidates.Remove(vertex);
-
-                if (coloring[vertex] + actualClique.Count > maxClique.Count)
-                {
-                    actualClique.Add(vertex);
-                    var newCandidates = new List<int>();
-                    foreach (int neighbor in graph.GetNeighbors(vertex))
-                    {
-                        if (candidates.Contains(neighbor))
-                        {
-                            newCandidates.Add(neighbor);
-                        }
-                    }
-
-                    if (newCandidates.Any())
-                    {
-                        FindMaximumCliqueRec(newCandidates, ColorVertices(ref newCandidates));
-                    }
-                    else if (actualClique.Count > maxClique.Count)
-                    {
-                        maxClique = new List<int>(actualClique);
-                    }
-                    actualClique.Remove(vertex);
-                }
-            }
         }
 
         public List<int> FindMaximumClique(Graph graph)
         {
             this.graph = graph;
             var candidates = new List<int>();
+
             for (int i = 0; i < graph.VerticesCount; i++)
-            {
                 candidates.Add(i);
+
+            candidates.Sort((a, b) =>
+            {
+                int aDegree = graph.GetDegree(a);
+                int bDegree = graph.GetDegree(b);
+                if (aDegree == bDegree)
+                    return 0;
+                else if (aDegree > bDegree)
+                    return 1;
+                else
+                    return -1;
+            });
+
+            Dictionary<int, int> coloring = ColorVertices(candidates);
+
+            while (candidates.Any())
+            {
+                int vertex = GetVertexWithMaxColor(coloring);
+                candidates.Remove(vertex);
+                maxClique.Add(vertex);
+                List<int> neighbors = graph.GetNeighbors(vertex);
+                candidates.RemoveAll((candidate) => !neighbors.Contains(candidate));
+                coloring = ColorVertices(candidates);
             }
-            FindMaximumCliqueRec(candidates, ColorVertices(ref candidates));
 
             return maxClique;
         }
