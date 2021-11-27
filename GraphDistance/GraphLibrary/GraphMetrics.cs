@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphLibrary
 {
-    public static class MatricesDistance
+    public static class GraphMetrics
     {
         public static double ExtendedTaxicabGeometry(Matrix<double> m1, Matrix<double> m2)
         {
@@ -51,6 +51,11 @@ namespace GraphLibrary
             sum += maxCols - minCols;
 
             return sum;
+        }
+    
+        public static double MaximumSubgraphGeometry(int cliqueSize, int n, int m)
+        {
+            return Math.Round(1.0 - cliqueSize / (double)Math.Max(n, m), 4); 
         }
     }
 }

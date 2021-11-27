@@ -127,19 +127,19 @@ namespace GraphLibrary
         public Graph G { get; }
         public Graph H { get; }
 
-        private readonly Dictionary<int, (int, int)> nodeMap;
+        public Dictionary<int, (int, int)> NodeMap { get; }
         public CompatibilityGraph(Graph g, Graph h) : base(g.VerticesCount * h.VerticesCount)
         {
             G = (Graph)g.Clone();
             H = (Graph)h.Clone();
-            nodeMap = new Dictionary<int, (int, int)>();
+            NodeMap = new Dictionary<int, (int, int)>();
 
             var nG = g.VerticesCount;
             var nH = h.VerticesCount;
             var max = Math.Max(nG, nH);
             for (int i = 0; i < nG * nH; i++)
             {
-                nodeMap.Add(i, (i / max, i % max));
+                NodeMap.Add(i, (i / max, i % max));
             }
 
             UpdateAdjacencyMatrix();
@@ -152,7 +152,7 @@ namespace GraphLibrary
 
             foreach (var vertex in vertices)
             {
-                var mapping = nodeMap[vertex];
+                var mapping = NodeMap[vertex];
                 gOrder.Add(mapping.Item1);
                 hOrder.Add(mapping.Item2);
             }
@@ -177,8 +177,8 @@ namespace GraphLibrary
                         continue;
                     }
 
-                    (var x, var y) = nodeMap[i];
-                    (var a, var b) = nodeMap[j];
+                    (var x, var y) = NodeMap[i];
+                    (var a, var b) = NodeMap[j];
 
                     if (Math.Abs(G.Edges[x, a] - H.Edges[y, b]) < double.Epsilon &&
                         x != a && y != b)

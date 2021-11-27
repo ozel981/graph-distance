@@ -9,7 +9,7 @@ namespace GraphLibrary
     public class ExactAlgorithm
     {
         private List<int> maxClique = new List<int>();
-        private void PrepareSets(int verticesCount, out List<int> clique, out List<int> rejected, out List<int> candidates)
+        private static void PrepareSets(int verticesCount, out List<int> clique, out List<int> rejected, out List<int> candidates)
         {
             clique = new List<int>();
             rejected = new List<int>();
@@ -50,12 +50,7 @@ namespace GraphLibrary
 
         public List<int> FindMaximumClique(Graph graph)
         {
-            List<int> maximumClique = new List<int>();
-
-            List<int> clique;
-            List<int> rejected;
-            List<int> candidates;
-            PrepareSets(graph.VerticesCount, out clique, out rejected, out candidates);
+            PrepareSets(graph.VerticesCount, out List<int> clique, out List<int> rejected, out List<int> candidates);
             FindMaximumCliqueRec(ref graph, ref clique, ref rejected, ref candidates);
 
             return maxClique;
