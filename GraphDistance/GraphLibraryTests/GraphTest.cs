@@ -36,6 +36,30 @@ namespace GraphLibraryTests
             g.Edges.ToArray().Should().Equals(expectedAdjacencyMatrix.ToArray());
         }
 
+        [Fact]
+        public void DirectedGraph()
+        {
+            var gEdges = new double[,]
+            {
+                {0, 1, 0},
+                {1, 0, 1},
+                {1, 1, 0},
+            };
+            var g = new Graph(gEdges);
+            Assert.True(g.IsDirected());
+        }
+        [Fact]
+        public void UndirectedGraph()
+        {
+            var gEdges = new double[,]
+            {
+                {0, 1, 0},
+                {1, 0, 1},
+                {0, 1, 0},
+            };
+            var g = new Graph(gEdges);
+            Assert.False(g.IsDirected());
+        }
         // This test case is taken from http://www.lsis.org/tuples/workshop/wscp_bgbtp_1.pdf, fig. 2
         [Fact]
         public void ComputeCompatibilityGraph()

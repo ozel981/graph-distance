@@ -120,6 +120,11 @@ namespace GraphLibrary
         {
             return new Graph(Edges.Clone().ToArray());
         }
+
+        public bool IsDirected()
+        {
+            return !this.Edges.Equals(this.Edges.Transpose());
+        }
     }
 
     public class CompatibilityGraph : Graph
