@@ -187,6 +187,8 @@ namespace GraphDistance
             {
                 var g = new Graph(ReadMatrixFromStdin());
                 var h = new Graph(ReadMatrixFromStdin());
+                ValidateGraph(g);
+                ValidateGraph(h);
                 return (g, h);
             }
             const Int32 BufferSize = 128;
@@ -225,10 +227,19 @@ namespace GraphDistance
                 }
                 var g = new Graph(edgesG);
                 var h = new Graph(edgesH);
+                ValidateGraph(g);
+                ValidateGraph(h);
                 return (g, h);
             }
         }
 
+        static void ValidateGraph(Graph g)
+        {
+            if (g.IsDirected())
+            {
+                throw new Exception("graf nie może być skierowany");
+            }
+        }
 
         static List<string> ReadAlgorithms()
         {
