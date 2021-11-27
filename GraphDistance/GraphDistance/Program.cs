@@ -54,17 +54,30 @@ namespace GraphDistance
 
             var vertices = exactAlgorithms.FindMaximumClique(c);
 
-            c.ReorderAdjacencyMatrix(vertices);
-
-            var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+            var result = GraphMetrics.MaximumSubgraphGeometry(vertices.Count, g.VerticesCount, h.VerticesCount);
             watch.Stop();
 
-            Console.WriteLine("Grafy G i H przed zmianą etykiet wierzchołków");
-            Console.WriteLine(TwoGraphsToString(g, h));
-            
-            Console.WriteLine("Grafy G i H po zmianie etykiet wierzchołków");
-            Console.WriteLine(TwoGraphsToString(c.G, c.H));
-            Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
+            Console.WriteLine($"Rozmiar największego wspólnego podgrafu: {vertices.Count}");
+            Console.WriteLine("Wierzchołki największego wspólnego podgrafu:");
+
+            Console.WriteLine($"Graph g:");
+            foreach (var vertex in vertices)
+            {
+                var labels = c.NodeMap[vertex];
+
+                Console.Write($"{labels.Item1} ");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"Graph h:");
+            foreach (var vertex in vertices)
+            {
+                var labels = c.NodeMap[vertex];
+
+                Console.Write($"{labels.Item2} ");
+            }
+            Console.WriteLine();
+
             Console.WriteLine($"Wynik dokładnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
 
@@ -79,16 +92,30 @@ namespace GraphDistance
 
             var vertices = approximationAlgorithms.FindMaximumClique(c, (int)(threshold * c.VerticesCount));
 
-            c.ReorderAdjacencyMatrix(vertices);
-
-            var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+            var result = GraphMetrics.MaximumSubgraphGeometry(vertices.Count, g.VerticesCount, h.VerticesCount);
             watch.Stop();
-            Console.WriteLine("Grafy G i H przed zmianą etykiet wierzchołków");
-            Console.WriteLine(TwoGraphsToString(g, h));
-            
-            Console.WriteLine("Grafy G i H po zmianie etykiet wierzchołków");
-            Console.WriteLine(TwoGraphsToString(c.G, c.H));
-            Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
+
+            Console.WriteLine($"Rozmiar największego wspólnego podgrafu: {vertices.Count}");
+            Console.WriteLine("Wierzchołki największego wspólnego podgrafu:");
+
+            Console.WriteLine($"Graph g:");
+            foreach (var vertex in vertices)
+            {
+                var labels = c.NodeMap[vertex];
+
+                Console.Write($"{labels.Item1} ");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"Graph h:");
+            foreach (var vertex in vertices)
+            {
+                var labels = c.NodeMap[vertex];
+
+                Console.Write($"{labels.Item2} ");
+            }
+            Console.WriteLine();
+
             Console.WriteLine($"Wynik aproksymacyjnego algorytmu: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
         
@@ -103,61 +130,33 @@ namespace GraphDistance
 
             var vertices = approximationAlgorithm.FindMaximumClique(c);
 
-            c.ReorderAdjacencyMatrix(vertices);
-
-            var result = MatricesDistance.ExtendedTaxicabGeometry(c.G.Edges, c.H.Edges);
+            var result = GraphMetrics.MaximumSubgraphGeometry(vertices.Count, g.VerticesCount, h.VerticesCount);
             watch.Stop();
-            Console.WriteLine("Grafy G i H przed zmianą etykiet wierzchołków");
-            Console.WriteLine(TwoGraphsToString(g, h));
-            
-            Console.WriteLine("Grafy G i H po zmianie etykiet wierzchołków");
-            Console.WriteLine(TwoGraphsToString(c.G, c.H));
-            Console.WriteLine($"Rozmiar kliki: {vertices.Count}");
+
+            Console.WriteLine($"Rozmiar największego wspólnego podgrafu: {vertices.Count}");
+            Console.WriteLine("Wierzchołki największego wspólnego podgrafu:");
+
+            Console.WriteLine($"Graph g:");
+            foreach (var vertex in vertices)
+            {
+                var labels = c.NodeMap[vertex];
+
+                Console.Write($"{labels.Item1} ");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"Graph h:");
+            foreach (var vertex in vertices)
+            {
+                var labels = c.NodeMap[vertex];
+
+                Console.Write($"{labels.Item2} ");
+            }
+            Console.WriteLine();
+
             Console.WriteLine($"Wynik aproksymacyjnego algorytmu z kolorowaniem: {result}, czas wykonania: {watch.ElapsedMilliseconds / 1000.0} s");
         }
 
-        static string TwoGraphsToString(Graph g, Graph h)
-        {
-            int n = g.VerticesCount;
-            int m = h.VerticesCount;
-            if (m > n)
-            {
-                (g, h) = (h, g);
-                (n, m) = (m, n);
-            }
-
-            var stringBuilder = new StringBuilder();
-            var gLabel = $"Graf o liczbie {n} wierzchołków";
-            stringBuilder.Append(gLabel);
-            var gRowLength = Math.Max(n * 3 + 5, gLabel.Length + 5);
-            for (int i = 0; i < gRowLength - gLabel.Length; i++)
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append($"Graf o liczbie {m} wierzchołków\n");
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    stringBuilder.Append($"{g.Edges[i, j]}, ");
-                }
-
-                if (i < m)
-                {
-                    for (int j = 0; j < gRowLength - n * 3; j++)
-                    {
-                        stringBuilder.Append(" ");
-                    }
-                    for (int j = 0; j < m; j++)
-                    {
-                        stringBuilder.Append($"{h.Edges[i, j]}, ");
-                    }
-                }
-                stringBuilder.Append('\n');
-            }
-
-            return stringBuilder.ToString();
-        }
         static double[,] ReadMatrixFromStdin()
         {
             Console.WriteLine("\nPodaj liczbę wierzchołków grafu:");

@@ -31,7 +31,7 @@ namespace GraphLibraryTests
                 {1, 1, 1, 1 }
             });
 
-            var result = MatricesDistance.ExtendedTaxicabGeometry(m1, m2);
+            var result = GraphMetrics.ExtendedTaxicabGeometry(m1, m2);
 
             result.Should().Equals(expectedResult);
         }
