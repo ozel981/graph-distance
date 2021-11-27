@@ -60,7 +60,7 @@ namespace GraphDistance
             Console.WriteLine($"Rozmiar największego wspólnego podgrafu: {vertices.Count}");
             Console.WriteLine("Wierzchołki największego wspólnego podgrafu:");
 
-            Console.WriteLine($"Graph g:");
+            Console.WriteLine($"Graf g:");
             foreach (var vertex in vertices)
             {
                 var labels = c.NodeMap[vertex];
@@ -69,7 +69,7 @@ namespace GraphDistance
             }
             Console.WriteLine();
 
-            Console.WriteLine($"Graph h:");
+            Console.WriteLine($"Graf h:");
             foreach (var vertex in vertices)
             {
                 var labels = c.NodeMap[vertex];
@@ -98,7 +98,7 @@ namespace GraphDistance
             Console.WriteLine($"Rozmiar największego wspólnego podgrafu: {vertices.Count}");
             Console.WriteLine("Wierzchołki największego wspólnego podgrafu:");
 
-            Console.WriteLine($"Graph g:");
+            Console.WriteLine($"Graf g:");
             foreach (var vertex in vertices)
             {
                 var labels = c.NodeMap[vertex];
@@ -107,7 +107,7 @@ namespace GraphDistance
             }
             Console.WriteLine();
 
-            Console.WriteLine($"Graph h:");
+            Console.WriteLine($"Graf h:");
             foreach (var vertex in vertices)
             {
                 var labels = c.NodeMap[vertex];
@@ -121,7 +121,7 @@ namespace GraphDistance
         
         static void RunColoringApproximationAlgorithm(Graph g, Graph h)
         {
-            Console.WriteLine("\n===== ALGORYTM APROKSYMACYJNY Z KOLOROWANIEM =====\n");
+            Console.WriteLine("\n===== ALGORYTM APROKSYMACYJNY Z KOLOROWANIEM WIERZCHOŁKÓW =====\n");
             
             var watch = Stopwatch.StartNew();
             var c = new CompatibilityGraph(g, h);
@@ -136,7 +136,7 @@ namespace GraphDistance
             Console.WriteLine($"Rozmiar największego wspólnego podgrafu: {vertices.Count}");
             Console.WriteLine("Wierzchołki największego wspólnego podgrafu:");
 
-            Console.WriteLine($"Graph g:");
+            Console.WriteLine($"Graf g:");
             foreach (var vertex in vertices)
             {
                 var labels = c.NodeMap[vertex];
@@ -145,7 +145,7 @@ namespace GraphDistance
             }
             Console.WriteLine();
 
-            Console.WriteLine($"Graph h:");
+            Console.WriteLine($"Graf h:");
             foreach (var vertex in vertices)
             {
                 var labels = c.NodeMap[vertex];
@@ -161,6 +161,10 @@ namespace GraphDistance
         {
             Console.WriteLine("\nPodaj liczbę wierzchołków grafu:");
             var n = Convert.ToInt32(Console.ReadLine());
+            if (n < 1)
+            {
+                throw new Exception("liczba wierzchołków musi być większa od 0");
+            }
             double[,] edges = new double[n,n];
             Console.WriteLine("\nPodaj macierz sąsiedztwa grafu:");
             for (int i = 0; i < n; i++)
@@ -197,6 +201,10 @@ namespace GraphDistance
             {
                 String line = streamReader.ReadLine();
                 var n = Convert.ToInt32(line);
+                if (n < 1)
+                {
+                    throw new Exception("liczba wierzchołków musi być większa od 0");
+                }
                 double[,] edgesG = new double[n,n];
                 for (int i = 0; i < n; i++)
                 {
@@ -245,7 +253,7 @@ namespace GraphDistance
         {
             Console.WriteLine("\nLista algorytmów:");
             Console.WriteLine("a) algorytm aproksymacyjny");
-            Console.WriteLine("k) algorytm aproksymacyjny z kolorowaniem");
+            Console.WriteLine("k) algorytm aproksymacyjny z kolorowaniem wierzchołków");
             Console.WriteLine("d) algorytm dokładny");
 
             Console.WriteLine("\nPodaj litery oznaczające algorytmy oddzielone spacją: ");
@@ -256,7 +264,7 @@ namespace GraphDistance
             {
                 if (!availableAlgorithms.Contains(a))
                 {
-                    throw new Exception($"algorym {a} nie jest obsługiwany");
+                    throw new Exception($"algorytm {a} nie jest obsługiwany");
                 }
             }
             return new List<string>(algos);
