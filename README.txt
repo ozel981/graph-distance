@@ -13,6 +13,6 @@ Korzystanie z programu
    Użytkownik może wybrać dowolny z nich podając odpowiadającą mu literę. Użytkownik ma możliwość wybrania kilku algorytmów na raz, należy wtedy podać odpowiednie litery oddzielone spacją.
 3. Program wykonuje wybrane algorytmy na podanych wcześniej macierzach oraz wypisuje etykiety wierzchołków pierwszego i drugiego grafu, które reprezentują znaleziony wspólny podgraf, 
    obliczony dystans oraz czas działania algorytmu.
-4. Program kończy działanie
+4. Program kończy działanie.
 
 Autorzy: Jakub Michalak, Damian Opoka, Wojciech Podmokły
